@@ -5,13 +5,11 @@
 
 package org.osmdroid.tileprovider.tilesource;
 
-
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.util.Log;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.tileprovider.MapTile;
+import org.osmdroid.tileprovider.util.ManifestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,35 +70,8 @@ public class MapBoxTileSource extends OnlineTileSourceBase
      */
     public static void retrieveMapBoxMapId(final Context aContext)
     {
-        // get the key from the manifest
-        final PackageManager pm = aContext.getPackageManager();
-        try {
-            final ApplicationInfo info = pm.getApplicationInfo(aContext.getPackageName(), PackageManager.GET_META_DATA);
-            if (info.metaData == null)
-            {
-                logger.info("MapBox MapId not found in manifest");
-            }
-            else
-            {
-                final String key = info.metaData.getString(MAPBOX_MAPID);
-                if (key == null)
-                {
-                    logger.info("MapBox MapId not found in manifest");
-                }
-                else
-                {
-                    if (DEBUGMODE)
-                    {
-                        logger.debug("MapBox MapId: " + key);
-                    }
-                    mapBoxMapId = key.trim();
-                }
-            }
-        }
-        catch (final PackageManager.NameNotFoundException e)
-        {
-            logger.info("MapBox MapId not found in manifest", e);
-        }
+        // Retrieve the MapId from the Manifest
+        mapBoxMapId = ManifestUtil.retrieveKey(aContext, MAPBOX_MAPID);
     }
 
     public static String getMapBoxMapId()
